@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Enter Results — Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <h1>Results: <span th:text="${competition.name}"></span></h1>
+    <p>Status:
+        <span class="badge"
+              th:classappend="${competition.status.name() == 'UPCOMING' ? 'badge-upcoming' : (competition.status.name() == 'COMPLETED' ? 'badge-completed' : 'badge-first-run')}"
+              th:text="${competition.status.name().replace('_',' ')}"></span>
+    </p>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <!-- ===== SKI SLALOM ===== -->
+    <div th:if="${competition.type.name() == 'SKI_SLALOM'}">
+
+        <!-- First Run Entry -->
+        <div class="card" th:if="${competition.status.name() == 'UPCOMING'}">
+            <h2>Enter First Run Result</h2>
+            <form th:action="@{/admin/competitions/{id}/results/slalom/first-run(id=${competition.id})}" method="post">
+                <div class="form-group">
+                    <label>Athlete</label>
+                    <select name="athleteId" required>
+                        <option value="">-- Select Athlete --</option>
+                        <option th:each="reg : ${registrations}"
+                                th:value="${reg.athlete.id}"
+                                th:text="${reg.athlete.name} + ' (' + ${reg.athlete.country} + ')'"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Time (seconds)</label>
+                    <input type="number" name="time" step="0.01" min="0" placeholder="e.g. 55.43"/>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" name="dnf"/> Did Not Finish (DNF)</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Save First Run</button>
+            </form>
+
+            <hr style="margin:1.5rem 0;"/>
+            <h3>Finalize First Run</h3>
+            <p style="color:#666;font-size:0.9rem;">
+                This will advance top <strong th:text="${competition.topCutoff}"></strong> athletes to the second run.
+            </p>
+            <form th:action="@{/admin/competitions/{id}/finalize/first-run(id=${competition.id})}" method="post">
+                <button type="submit" class="btn btn-warning"
+                        onclick="return confirm('Finalize first run? This cannot be undone.')">
+                    Finalize First Run
+                </button>
+            </form>
+        </div>
+
+        <!-- Second Run Entry -->
+        <div class="card" th:if="${competition.status.name() == 'FIRST_RUN_DONE'}">
+            <h2>Enter Second Run Result</h2>
+            <form th:action="@{/admin/competitions/{id}/results/slalom/second-run(id=${competition.id})}" method="post">
+                <div class="form-group">
+                    <label>Athlete (advanced to 2nd run)</label>
+                    <select name="athleteId" required>
+                        <option value="">-- Select Athlete --</option>
+                        <option th:each="r : ${results}"
+                                th:if="${r.advancedToSecondRun}"
+                                th:value="${r.athlete.id}"
+                                th:text="${r.athlete.name} + ' (' + ${r.athlete.country} + ') - 1st run: ' + ${r.firstRunTime} + 's'"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Time (seconds)</label>
+                    <input type="number" name="time" step="0.01" min="0" placeholder="e.g. 55.43"/>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" name="dnf"/> Did Not Finish (DNF)</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Second Run</button>
+            </form>
+
+            <hr style="margin:1.5rem 0;"/>
+            <h3>Finalize Competition</h3>
+            <form th:action="@{/admin/competitions/{id}/finalize/slalom(id=${competition.id})}" method="post">
+                <button type="submit" class="btn btn-success"
+                        onclick="return confirm('Finalize rankings and assign medals?')">
+                    Finalize &amp; Assign Medals
+                </button>
+            </form>
+        </div>
+
+        <!-- Current Results Table -->
+        <div class="card" th:if="${results != null and !results.empty}">
+            <h2>Current Results</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Athlete</th><th>Country</th><th>Run 1</th><th>DNF 1</th>
+                    <th>Advanced</th><th>Run 2</th><th>DNF 2</th><th>Final</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${results}">
+                    <td th:text="${r.athlete.name}"></td>
+                    <td th:text="${r.athlete.country}"></td>
+                    <td th:text="${r.firstRunTime != null ? r.firstRunTime + 's' : '-'}"></td>
+                    <td th:text="${r.firstRunDnf ? 'DNF' : ''}"></td>
+                    <td th:text="${r.advancedToSecondRun ? 'YES' : 'NO'}"></td>
+                    <td th:text="${r.secondRunTime != null ? r.secondRunTime + 's' : '-'}"></td>
+                    <td th:text="${r.secondRunDnf ? 'DNF' : ''}"></td>
+                    <td th:text="${r.finalTime != null ? r.finalTime + 's' : '-'}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== BIATHLON ===== -->
+    <div th:if="${competition.type.name() == 'BIATHLON'}">
+        <div class="card" th:if="${competition.status.name() != 'COMPLETED'}">
+            <h2>Enter Biathlon Result</h2>
+            <p style="color:#666;font-size:0.9rem;">Penalty: 60 seconds per missed shot</p>
+            <form th:action="@{/admin/competitions/{id}/results/biathlon(id=${competition.id})}" method="post">
+                <div class="form-group">
+                    <label>Athlete</label>
+                    <select name="athleteId" required>
+                        <option value="">-- Select Athlete --</option>
+                        <option th:each="reg : ${registrations}"
+                                th:value="${reg.athlete.id}"
+                                th:text="${reg.athlete.name} + ' (' + ${reg.athlete.country} + ')'"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Skiing Time (seconds)</label>
+                    <input type="number" name="skiingTime" step="0.01" min="0" placeholder="e.g. 1560.50"/>
+                </div>
+                <div class="form-group">
+                    <label>Missed Shots</label>
+                    <input type="number" name="missedShots" value="0" min="0" max="20"/>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" name="dnf"/> Did Not Finish (DNF)</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Result</button>
+            </form>
+
+            <hr style="margin:1.5rem 0;"/>
+            <h3>Finalize Competition</h3>
+            <form th:action="@{/admin/competitions/{id}/finalize/biathlon(id=${competition.id})}" method="post">
+                <button type="submit" class="btn btn-success"
+                        onclick="return confirm('Finalize rankings and assign medals?')">
+                    Finalize &amp; Assign Medals
+                </button>
+            </form>
+        </div>
+
+        <div class="card" th:if="${results != null and !results.empty}">
+            <h2>Current Results</h2>
+            <table>
+                <thead>
+                <tr><th>Athlete</th><th>Country</th><th>Skiing Time</th><th>Misses</th><th>Penalty</th><th>Final Time</th><th>DNF</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${results}">
+                    <td th:text="${r.athlete.name}"></td>
+                    <td th:text="${r.athlete.country}"></td>
+                    <td th:text="${r.skiingTime != null ? r.skiingTime + 's' : '-'}"></td>
+                    <td th:text="${r.missedShots}"></td>
+                    <td th:text="${r.penaltyTime != null ? r.penaltyTime + 's' : '-'}"></td>
+                    <td th:text="${r.finalTime != null ? r.finalTime + 's' : '-'}"></td>
+                    <td th:text="${r.dnf ? 'DNF' : ''}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <br/>
+    <a th:href="@{/competitions/{id}(id=${competition.id})}" class="btn btn-primary">View Competition</a>
+    <a th:href="@{/competitions}" class="btn btn-primary" style="margin-left:0.5rem;">All Competitions</a>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

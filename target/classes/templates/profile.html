@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Profile — Winter Olympics</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <h1>My Profile</h1>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="card" th:if="${athlete != null}">
+        <h2>Edit Profile</h2>
+        <form th:action="@{/profile/update}" method="post">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" th:value="${athlete.name}" required/>
+            </div>
+            <div class="form-group">
+                <label>Country</label>
+                <input type="text" name="country" th:value="${athlete.country}" required/>
+            </div>
+            <div class="form-group">
+                <label>Birth Date</label>
+                <input type="date" name="birthDate" th:value="${athlete.birthDate}" required/>
+            </div>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Account</h2>
+        <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+        <p><strong>Role:</strong> <span th:text="${user.role}"></span></p>
+        <br/>
+        <form th:action="@{/profile/delete}" method="post"
+              onsubmit="return confirm('Are you sure? This will permanently delete your profile.');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete My Profile</button>
+        </form>
+    </div>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

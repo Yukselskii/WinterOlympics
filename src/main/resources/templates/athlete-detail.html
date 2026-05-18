@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${athlete.name} + ' — Winter Olympics'"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div class="card">
+        <h1 th:text="${athlete.name}"></h1>
+        <table>
+            <tr><th>Country</th><td th:text="${athlete.country}"></td></tr>
+            <tr><th>Gender</th><td><span class="badge"
+                                        th:classappend="${athlete.gender.name() == 'MALE' ? 'badge-male' : 'badge-female'}"
+                                        th:text="${athlete.gender}"></span></td></tr>
+            <tr><th>Birth Date</th><td th:text="${athlete.birthDate}"></td></tr>
+            <tr><th>Age</th><td th:text="${athlete.age}"></td></tr>
+        </table>
+    </div>
+
+    <div class="card" th:if="${!athlete.medals.empty}">
+        <h2>Medals</h2>
+        <table>
+            <thead><tr><th>Competition</th><th>Medal</th></tr></thead>
+            <tbody>
+            <tr th:each="m : ${athlete.medals}">
+                <td th:text="${m.competition.name}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${m.type.name() == 'GOLD' ? 'badge-gold' : (m.type.name() == 'SILVER' ? 'badge-silver' : 'badge-bronze')}"
+                          th:text="${m.type}"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a th:href="@{/athletes}" class="btn btn-primary">Back to Athletes</a>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

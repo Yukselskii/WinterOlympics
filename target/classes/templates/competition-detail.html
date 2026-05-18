@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${competition.name} + ' — Winter Olympics'"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="card">
+        <h1 th:text="${competition.name}"></h1>
+        <p>
+            <strong>Type:</strong> <span th:text="${competition.type.name().replace('_',' ')}"></span> |
+            <strong>Gender:</strong>
+            <span class="badge" th:classappend="${competition.gender.name() == 'MALE' ? 'badge-male' : 'badge-female'}"
+                  th:text="${competition.gender}"></span> |
+            <strong>Min Age:</strong> <span th:text="${competition.minimumAge}"></span> |
+            <strong>Date:</strong> <span th:text="${competition.competitionDate}"></span> |
+            <strong>Status:</strong>
+            <span class="badge"
+                  th:classappend="${competition.status.name() == 'UPCOMING' ? 'badge-upcoming' : (competition.status.name() == 'COMPLETED' ? 'badge-completed' : 'badge-first-run')}"
+                  th:text="${competition.status.name().replace('_',' ')}"></span>
+        </p>
+    </div>
+
+    <!-- Registration (athletes only, upcoming competitions) -->
+    <div sec:authorize="hasRole('ATHLETE')" th:if="${competition.status.name() == 'UPCOMING'}" class="card">
+        <h2>Register for this Competition</h2>
+        <form th:action="@{/competitions/{id}/register(id=${competition.id})}" method="post">
+            <button type="submit" class="btn btn-success">Register</button>
+        </form>
+    </div>
+
+    <!-- Admin results link -->
+    <div sec:authorize="hasRole('ADMIN')" class="card">
+        <a th:href="@{/admin/competitions/{id}/results(id=${competition.id})}" class="btn btn-warning">
+            Manage Results
+        </a>
+    </div>
+
+    <!-- Registered athletes -->
+    <div class="card">
+        <h2>Registered Athletes (<span th:text="${registrations.size()}"></span>)</h2>
+        <table th:if="${!registrations.empty}">
+            <thead><tr><th>#</th><th>Name</th><th>Country</th><th>Age</th></tr></thead>
+            <tbody>
+            <tr th:each="reg, stat : ${registrations}">
+                <td th:text="${stat.index + 1}"></td>
+                <td th:text="${reg.athlete.name}"></td>
+                <td th:text="${reg.athlete.country}"></td>
+                <td th:text="${reg.athlete.age}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${registrations.empty}" style="color:#888;">No athletes registered yet.</p>
+    </div>
+
+    <!-- Rankings / Results -->
+    <div class="card" th:if="${!rankings.empty}">
+        <h2>Final Rankings</h2>
+
+        <!-- Ski Slalom -->
+        <table th:if="${competition.type.name() == 'SKI_SLALOM'}">
+            <thead>
+            <tr><th>Rank</th><th>Athlete</th><th>Country</th><th>Run 1</th><th>Run 2</th><th>Total</th><th>Medal</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rankings}"
+                th:classappend="${r.finalRank == 1 ? 'rank-1' : (r.finalRank == 2 ? 'rank-2' : (r.finalRank == 3 ? 'rank-3' : ''))}">
+                <td th:text="${r.finalRank}"></td>
+                <td th:text="${r.athlete.name}"></td>
+                <td th:text="${r.athlete.country}"></td>
+                <td th:text="${r.firstRunTime != null ? #numbers.formatDecimal(r.firstRunTime, 1, 2) + 's' : 'DNF'}"></td>
+                <td th:text="${r.secondRunTime != null ? #numbers.formatDecimal(r.secondRunTime, 1, 2) + 's' : 'DNF'}"></td>
+                <td th:text="${r.finalTime != null ? #numbers.formatDecimal(r.finalTime, 1, 2) + 's' : 'DNF'}"></td>
+                <td>
+                    <span th:if="${r.finalRank == 1}" class="badge badge-gold">GOLD</span>
+                    <span th:if="${r.finalRank == 2}" class="badge badge-silver">SILVER</span>
+                    <span th:if="${r.finalRank == 3}" class="badge badge-bronze">BRONZE</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Biathlon -->
+        <table th:if="${competition.type.name() == 'BIATHLON'}">
+            <thead>
+            <tr><th>Rank</th><th>Athlete</th><th>Country</th><th>Skiing Time</th><th>Misses</th><th>Penalty</th><th>Total</th><th>Medal</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rankings}"
+                th:classappend="${r.finalRank == 1 ? 'rank-1' : (r.finalRank == 2 ? 'rank-2' : (r.finalRank == 3 ? 'rank-3' : ''))}">
+                <td th:text="${r.finalRank}"></td>
+                <td th:text="${r.athlete.name}"></td>
+                <td th:text="${r.athlete.country}"></td>
+                <td th:text="${r.skiingTime != null ? #numbers.formatDecimal(r.skiingTime, 1, 2) + 's' : 'DNF'}"></td>
+                <td th:text="${r.missedShots}"></td>
+                <td th:text="${r.penaltyTime != null ? #numbers.formatDecimal(r.penaltyTime, 1, 0) + 's' : '-'}"></td>
+                <td th:text="${r.finalTime != null ? #numbers.formatDecimal(r.finalTime, 1, 2) + 's' : 'DNF'}"></td>
+                <td>
+                    <span th:if="${r.finalRank == 1}" class="badge badge-gold">GOLD</span>
+                    <span th:if="${r.finalRank == 2}" class="badge badge-silver">SILVER</span>
+                    <span th:if="${r.finalRank == 3}" class="badge badge-bronze">BRONZE</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a th:href="@{/competitions}" class="btn btn-primary">Back to Competitions</a>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

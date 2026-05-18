@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Winter Olympics Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container">
+    <div class="hero">
+        <h1>❄ Winter Olympics 2026</h1>
+        <p>Management System — Competitions, Rankings, and Medal Tables</p>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h2>Upcoming Competitions</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${competitions}">
+                    <td><a th:href="@{/competitions/{id}(id=${c.id})}" th:text="${c.name}"></a></td>
+                    <td th:text="${c.type.name().replace('_',' ')}"></td>
+                    <td>
+                        <span class="badge" th:classappend="${c.gender.name() == 'MALE' ? 'badge-male' : 'badge-female'}"
+                              th:text="${c.gender}"></span>
+                    </td>
+                    <td th:text="${c.competitionDate}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${c.status.name() == 'UPCOMING' ? 'badge-upcoming' : (c.status.name() == 'COMPLETED' ? 'badge-completed' : 'badge-first-run')}"
+                              th:text="${c.status.name().replace('_',' ')}"></span>
+                    </td>
+                </tr>
+                <tr th:if="${competitions.empty}">
+                    <td colspan="5" style="text-align:center;color:#888;">No competitions yet</td>
+                </tr>
+                </tbody>
+            </table>
+            <br/>
+            <a th:href="@{/competitions}" class="btn btn-primary">View All Competitions</a>
+        </div>
+
+        <div class="card">
+            <h2>Medal Table</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Country</th>
+                    <th>Gold</th>
+                    <th>Silver</th>
+                    <th>Bronze</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry, stat : ${medalTable}">
+                    <td th:text="${stat.index + 1}"></td>
+                    <td th:text="${entry.country}"></td>
+                    <td><span class="badge badge-gold" th:text="${entry.gold}"></span></td>
+                    <td><span class="badge badge-silver" th:text="${entry.silver}"></span></td>
+                    <td><span class="badge badge-bronze" th:text="${entry.bronze}"></span></td>
+                    <td th:text="${entry.total}"></td>
+                </tr>
+                <tr th:if="${medalTable.empty}">
+                    <td colspan="6" style="text-align:center;color:#888;">No medals awarded yet</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer>Winter Olympics Management System &mdash; University Project</footer>
+</body>
+</html>

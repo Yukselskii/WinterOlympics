@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Dashboard — Winter Olympics</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <h1>Dashboard</h1>
+    <p>Welcome, <strong th:text="${user.username}"></strong>
+        (<span th:text="${user.role}"></span>)</p>
+
+    <div sec:authorize="hasRole('ATHLETE')" class="card" th:if="${athlete != null}">
+        <h2>Your Profile</h2>
+        <table>
+            <tr><th>Name</th><td th:text="${athlete.name}"></td></tr>
+            <tr><th>Country</th><td th:text="${athlete.country}"></td></tr>
+            <tr><th>Gender</th><td th:text="${athlete.gender}"></td></tr>
+            <tr><th>Birth Date</th><td th:text="${athlete.birthDate}"></td></tr>
+            <tr><th>Age</th><td th:text="${athlete.age}"></td></tr>
+        </table>
+        <br/>
+        <a th:href="@{/profile}" class="btn btn-primary btn-sm">Edit Profile</a>
+    </div>
+
+    <div class="card">
+        <h2>Competitions</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th><th>Type</th><th>Gender</th><th>Date</th><th>Status</th><th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${competitions}">
+                <td><a th:href="@{/competitions/{id}(id=${c.id})}" th:text="${c.name}"></a></td>
+                <td th:text="${c.type.name().replace('_',' ')}"></td>
+                <td th:text="${c.gender}"></td>
+                <td th:text="${c.competitionDate}"></td>
+                <td th:text="${c.status.name().replace('_',' ')}"></td>
+                <td>
+                    <a th:href="@{/competitions/{id}(id=${c.id})}" class="btn btn-primary btn-sm">View</a>
+                    <a sec:authorize="hasRole('ADMIN')"
+                       th:href="@{/admin/competitions/{id}/results(id=${c.id})}"
+                       class="btn btn-warning btn-sm">Results</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div sec:authorize="hasRole('ADMIN')" class="card">
+        <h2>Admin Actions</h2>
+        <a th:href="@{/admin/competitions/new}" class="btn btn-success">+ New Competition</a>
+        <a th:href="@{/admin/athletes}" class="btn btn-primary" style="margin-left:0.5rem;">Manage Athletes</a>
+    </div>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

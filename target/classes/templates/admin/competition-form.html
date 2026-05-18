@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>New Competition — Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>.form-box { max-width: 600px; margin: 0 auto; }</style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div class="form-box card">
+        <h2>Create New Competition</h2>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <form th:action="@{/admin/competitions/new}" method="post">
+            <div class="form-group">
+                <label>Competition Name</label>
+                <input type="text" name="name" required placeholder="e.g. Women's Slalom"/>
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select name="type" required>
+                    <option value="">-- Select Type --</option>
+                    <option value="SKI_SLALOM">Ski Slalom</option>
+                    <option value="BIATHLON">Biathlon</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Gender Category</label>
+                <select name="gender" required>
+                    <option value="">-- Select Gender --</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Minimum Age</label>
+                <input type="number" name="minimumAge" value="16" min="14" required/>
+            </div>
+            <div class="form-group">
+                <label>Competition Date</label>
+                <input type="date" name="competitionDate" required/>
+            </div>
+            <div class="form-group">
+                <label>Top Cutoff for Second Run (Ski Slalom only)</label>
+                <input type="number" name="topCutoff" value="30" min="1" max="100"/>
+            </div>
+            <button type="submit" class="btn btn-success">Create Competition</button>
+            <a th:href="@{/competitions}" class="btn btn-primary" style="margin-left:0.5rem;">Cancel</a>
+        </form>
+    </div>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

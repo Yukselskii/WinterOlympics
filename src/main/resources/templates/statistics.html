@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Statistics — Winter Olympics</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <h1>Statistics</h1>
+
+    <div class="grid-2">
+        <div class="stat-box">
+            <div class="value" th:text="${avgAge}"></div>
+            <div class="label">Average Athlete Age</div>
+        </div>
+        <div class="stat-box">
+            <div class="value" th:if="${youngest != null}" th:text="${youngest.age}"></div>
+            <div class="value" th:unless="${youngest != null}">N/A</div>
+            <div class="label">Youngest Medalist Age</div>
+        </div>
+    </div>
+
+    <div class="card" th:if="${youngest != null}" style="margin-top:1.5rem;">
+        <h2>Youngest Medalist</h2>
+        <table>
+            <tr><th>Name</th><td th:text="${youngest.name}"></td></tr>
+            <tr><th>Country</th><td th:text="${youngest.country}"></td></tr>
+            <tr><th>Birth Date</th><td th:text="${youngest.birthDate}"></td></tr>
+            <tr><th>Age</th><td th:text="${youngest.age}"></td></tr>
+        </table>
+    </div>
+
+    <div class="card" th:if="${oldest != null}">
+        <h2>Oldest Medalist</h2>
+        <table>
+            <tr><th>Name</th><td th:text="${oldest.name}"></td></tr>
+            <tr><th>Country</th><td th:text="${oldest.country}"></td></tr>
+            <tr><th>Birth Date</th><td th:text="${oldest.birthDate}"></td></tr>
+            <tr><th>Age</th><td th:text="${oldest.age}"></td></tr>
+        </table>
+    </div>
+
+    <div th:if="${youngest == null and oldest == null}" class="card">
+        <p style="color:#888;text-align:center;">No medals awarded yet. Statistics will appear after competitions are finalized.</p>
+    </div>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

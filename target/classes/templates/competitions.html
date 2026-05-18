@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Competitions — Winter Olympics</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h1>Competitions</h1>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/competitions/new}" class="btn btn-success">+ New Competition</a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>#</th><th>Name</th><th>Type</th><th>Gender</th><th>Min Age</th><th>Date</th><th>Status</th><th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c, stat : ${competitions}">
+            <td th:text="${stat.index + 1}"></td>
+            <td><a th:href="@{/competitions/{id}(id=${c.id})}" th:text="${c.name}"></a></td>
+            <td th:text="${c.type.name().replace('_',' ')}"></td>
+            <td>
+                <span class="badge" th:classappend="${c.gender.name() == 'MALE' ? 'badge-male' : 'badge-female'}"
+                      th:text="${c.gender}"></span>
+            </td>
+            <td th:text="${c.minimumAge} + '+'"></td>
+            <td th:text="${c.competitionDate}"></td>
+            <td>
+                <span class="badge"
+                      th:classappend="${c.status.name() == 'UPCOMING' ? 'badge-upcoming' : (c.status.name() == 'COMPLETED' ? 'badge-completed' : 'badge-first-run')}"
+                      th:text="${c.status.name().replace('_',' ')}"></span>
+            </td>
+            <td>
+                <a th:href="@{/competitions/{id}(id=${c.id})}" class="btn btn-primary btn-sm">View</a>
+                <a sec:authorize="hasRole('ADMIN')"
+                   th:href="@{/admin/competitions/{id}/results(id=${c.id})}"
+                   class="btn btn-warning btn-sm">Results</a>
+            </td>
+        </tr>
+        <tr th:if="${competitions.empty}">
+            <td colspan="8" style="text-align:center;color:#888;">No competitions yet</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

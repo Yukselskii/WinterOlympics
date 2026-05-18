@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Manage Athletes — Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <h1>Manage Athletes</h1>
+    <table>
+        <thead>
+        <tr><th>#</th><th>Name</th><th>Country</th><th>Gender</th><th>Birth Date</th><th>Age</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="a, stat : ${athletes}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${a.name}"></td>
+            <td th:text="${a.country}"></td>
+            <td><span class="badge"
+                      th:classappend="${a.gender.name() == 'MALE' ? 'badge-male' : 'badge-female'}"
+                      th:text="${a.gender}"></span></td>
+            <td th:text="${a.birthDate}"></td>
+            <td th:text="${a.age}"></td>
+            <td>
+                <a th:href="@{/athletes/{id}(id=${a.id})}" class="btn btn-primary btn-sm">View</a>
+                <form th:action="@{/api/athletes/{id}(id=${a.id})}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="DELETE"/>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

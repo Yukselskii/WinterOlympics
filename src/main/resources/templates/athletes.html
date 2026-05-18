@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Athletes — Winter Olympics</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <h1>Athletes</h1>
+    <table>
+        <thead>
+        <tr><th>#</th><th>Name</th><th>Country</th><th>Gender</th><th>Birth Date</th><th>Age</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="a, stat : ${athletes}">
+            <td th:text="${stat.index + 1}"></td>
+            <td><a th:href="@{/athletes/{id}(id=${a.id})}" th:text="${a.name}"></a></td>
+            <td th:text="${a.country}"></td>
+            <td>
+                <span class="badge" th:classappend="${a.gender.name() == 'MALE' ? 'badge-male' : 'badge-female'}"
+                      th:text="${a.gender}"></span>
+            </td>
+            <td th:text="${a.birthDate}"></td>
+            <td th:text="${a.age}"></td>
+        </tr>
+        <tr th:if="${athletes.empty}">
+            <td colspan="6" style="text-align:center;color:#888;">No athletes found</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

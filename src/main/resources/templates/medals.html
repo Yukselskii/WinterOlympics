@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Medal Table — Winter Olympics</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <h1>Medal Table</h1>
+    <table>
+        <thead>
+        <tr><th>#</th><th>Country</th><th>Gold</th><th>Silver</th><th>Bronze</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="entry, stat : ${medalTable}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${entry.country}"></td>
+            <td><span class="badge badge-gold" th:text="${entry.gold}"></span></td>
+            <td><span class="badge badge-silver" th:text="${entry.silver}"></span></td>
+            <td><span class="badge badge-bronze" th:text="${entry.bronze}"></span></td>
+            <td th:text="${entry.total}"></td>
+        </tr>
+        <tr th:if="${medalTable.empty}">
+            <td colspan="6" style="text-align:center;color:#888;">No medals awarded yet</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>
