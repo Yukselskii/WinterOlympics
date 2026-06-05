@@ -2,8 +2,10 @@ package com.olympics.winter;
 
 import com.olympics.winter.entity.Athlete;
 import com.olympics.winter.entity.Competition;
+import com.olympics.winter.entity.CompetitionRegistration;
 import com.olympics.winter.entity.User;
 import com.olympics.winter.repository.AthleteRepository;
+import com.olympics.winter.repository.CompetitionRegistrationRepository;
 import com.olympics.winter.repository.CompetitionRepository;
 import com.olympics.winter.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -18,13 +20,17 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final AthleteRepository athleteRepository;
     private final CompetitionRepository competitionRepository;
+    private final CompetitionRegistrationRepository registrationRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataSeeder(UserRepository userRepository, AthleteRepository athleteRepository,
-                       CompetitionRepository competitionRepository, PasswordEncoder passwordEncoder) {
+                       CompetitionRepository competitionRepository,
+                       CompetitionRegistrationRepository registrationRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.athleteRepository = athleteRepository;
         this.competitionRepository = competitionRepository;
+        this.registrationRepository = registrationRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -63,9 +69,14 @@ public class DataSeeder implements CommandLineRunner {
         u4.setAthlete(a4);
         athleteRepository.save(a4);
 
-        athleteRepository.save(new Athlete("Johannes Klaebo", "NOR", Athlete.Gender.MALE, LocalDate.of(1996, 10, 22)));
-        athleteRepository.save(new Athlete("Marte Olsbu Roeiseland", "NOR", Athlete.Gender.FEMALE, LocalDate.of(1990, 5, 4)));
-        athleteRepository.save(new Athlete("Bianca Cherechigno", "ITA", Athlete.Gender.FEMALE, LocalDate.of(2002, 7, 19)));
+        Athlete a5 = athleteRepository.save(new Athlete("Johannes Klaebo", "NOR", Athlete.Gender.MALE, LocalDate.of(1996, 10, 22)));
+        Athlete a6 = athleteRepository.save(new Athlete("Marte Olsbu Roeiseland", "NOR", Athlete.Gender.FEMALE, LocalDate.of(1990, 5, 4)));
+        Athlete a7 = athleteRepository.save(new Athlete("Bianca Cherechigno", "ITA", Athlete.Gender.FEMALE, LocalDate.of(2002, 7, 19)));
+
+        Athlete a8  = athleteRepository.save(new Athlete("Mirela Popova", "BUL", Athlete.Gender.FEMALE, LocalDate.of(2001, 5, 12)));
+        Athlete a9  = athleteRepository.save(new Athlete("Albert Popov", "BUL", Athlete.Gender.MALE, LocalDate.of(2000, 1, 18)));
+        Athlete a10 = athleteRepository.save(new Athlete("Ekaterina Dafovska", "BUL", Athlete.Gender.FEMALE, LocalDate.of(1997, 4, 20)));
+        Athlete a11 = athleteRepository.save(new Athlete("Georgi Stoychev", "BUL", Athlete.Gender.MALE, LocalDate.of(1995, 8, 10)));
 
         Competition c1 = new Competition("Women's Slalom", Competition.CompetitionType.SKI_SLALOM,
                 Athlete.Gender.FEMALE, 16, LocalDate.of(2026, 2, 10));
@@ -77,11 +88,30 @@ public class DataSeeder implements CommandLineRunner {
         c2.setTopCutoff(30);
         competitionRepository.save(c2);
 
-        competitionRepository.save(new Competition("Women's Biathlon Sprint", Competition.CompetitionType.BIATHLON,
+        Competition c3 = competitionRepository.save(new Competition("Women's Biathlon Sprint", Competition.CompetitionType.BIATHLON,
                 Athlete.Gender.FEMALE, 18, LocalDate.of(2026, 2, 15)));
 
-        competitionRepository.save(new Competition("Men's Biathlon Sprint", Competition.CompetitionType.BIATHLON,
+        Competition c4 = competitionRepository.save(new Competition("Men's Biathlon Sprint", Competition.CompetitionType.BIATHLON,
                 Athlete.Gender.MALE, 18, LocalDate.of(2026, 2, 17)));
+
+        // Women's Slalom: Shiffrin, Vlhova, Cherechigno, Popova
+        registrationRepository.save(new CompetitionRegistration(a1, c1));
+        registrationRepository.save(new CompetitionRegistration(a2, c1));
+        registrationRepository.save(new CompetitionRegistration(a7, c1));
+        registrationRepository.save(new CompetitionRegistration(a8, c1));
+
+        // Men's Slalom: Kristoffersen, Pinturault, Albert Popov
+        registrationRepository.save(new CompetitionRegistration(a3, c2));
+        registrationRepository.save(new CompetitionRegistration(a4, c2));
+        registrationRepository.save(new CompetitionRegistration(a9, c2));
+
+        // Women's Biathlon Sprint: Roeiseland, Dafovska
+        registrationRepository.save(new CompetitionRegistration(a6, c3));
+        registrationRepository.save(new CompetitionRegistration(a10, c3));
+
+        // Men's Biathlon Sprint: Klaebo, Stoychev
+        registrationRepository.save(new CompetitionRegistration(a5, c4));
+        registrationRepository.save(new CompetitionRegistration(a11, c4));
 
         System.out.println("=== Sample data seeded ===");
         System.out.println("Admin: admin / admin123");
