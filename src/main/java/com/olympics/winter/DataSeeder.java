@@ -94,22 +94,18 @@ public class DataSeeder implements CommandLineRunner {
         Competition c4 = competitionRepository.save(new Competition("Men's Biathlon Sprint", Competition.CompetitionType.BIATHLON,
                 Athlete.Gender.MALE, 18, LocalDate.of(2026, 2, 17)));
 
-        // Women's Slalom: Shiffrin, Vlhova, Cherechigno, Popova
         registrationRepository.save(new CompetitionRegistration(a1, c1));
         registrationRepository.save(new CompetitionRegistration(a2, c1));
         registrationRepository.save(new CompetitionRegistration(a7, c1));
         registrationRepository.save(new CompetitionRegistration(a8, c1));
 
-        // Men's Slalom: Kristoffersen, Pinturault, Albert Popov
         registrationRepository.save(new CompetitionRegistration(a3, c2));
         registrationRepository.save(new CompetitionRegistration(a4, c2));
         registrationRepository.save(new CompetitionRegistration(a9, c2));
 
-        // Women's Biathlon Sprint: Roeiseland, Dafovska
         registrationRepository.save(new CompetitionRegistration(a6, c3));
         registrationRepository.save(new CompetitionRegistration(a10, c3));
 
-        // Men's Biathlon Sprint: Klaebo, Stoychev
         registrationRepository.save(new CompetitionRegistration(a5, c4));
         registrationRepository.save(new CompetitionRegistration(a11, c4));
 
