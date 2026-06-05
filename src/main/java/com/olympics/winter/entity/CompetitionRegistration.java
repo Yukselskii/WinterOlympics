@@ -1,7 +1,11 @@
 package com.olympics.winter.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "competition_registrations",
         uniqueConstraints = @UniqueConstraint(columnNames = {"athlete_id", "competition_id"}))
@@ -25,11 +29,4 @@ public class CompetitionRegistration {
         this.athlete = athlete;
         this.competition = competition;
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Athlete getAthlete() { return athlete; }
-    public void setAthlete(Athlete athlete) { this.athlete = athlete; }
-    public Competition getCompetition() { return competition; }
-    public void setCompetition(Competition competition) { this.competition = competition; }
 }

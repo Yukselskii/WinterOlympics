@@ -4,11 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "competitions")
 public class Competition {
@@ -42,15 +47,19 @@ public class Competition {
 
     private Integer topCutoff = 30;
 
+    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CompetitionRegistration> registrations = new ArrayList<>();
 
+    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SkiSlalomResult> skiSlalomResults = new ArrayList<>();
 
+    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BiathlonResult> biathlonResults = new ArrayList<>();
 
+    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Medal> medals = new ArrayList<>();
 
@@ -66,25 +75,4 @@ public class Competition {
         this.minimumAge = minimumAge;
         this.competitionDate = competitionDate;
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public CompetitionType getType() { return type; }
-    public void setType(CompetitionType type) { this.type = type; }
-    public Athlete.Gender getGender() { return gender; }
-    public void setGender(Athlete.Gender gender) { this.gender = gender; }
-    public int getMinimumAge() { return minimumAge; }
-    public void setMinimumAge(int minimumAge) { this.minimumAge = minimumAge; }
-    public LocalDate getCompetitionDate() { return competitionDate; }
-    public void setCompetitionDate(LocalDate competitionDate) { this.competitionDate = competitionDate; }
-    public CompetitionStatus getStatus() { return status; }
-    public void setStatus(CompetitionStatus status) { this.status = status; }
-    public Integer getTopCutoff() { return topCutoff; }
-    public void setTopCutoff(Integer topCutoff) { this.topCutoff = topCutoff; }
-    public List<CompetitionRegistration> getRegistrations() { return registrations; }
-    public List<SkiSlalomResult> getSkiSlalomResults() { return skiSlalomResults; }
-    public List<BiathlonResult> getBiathlonResults() { return biathlonResults; }
-    public List<Medal> getMedals() { return medals; }
 }

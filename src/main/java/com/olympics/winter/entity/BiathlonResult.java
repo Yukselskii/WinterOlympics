@@ -1,7 +1,11 @@
 package com.olympics.winter.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "biathlon_results")
 public class BiathlonResult {
@@ -40,23 +44,4 @@ public class BiathlonResult {
     }
 
     public boolean isFinished() { return finalTime != null; }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Competition getCompetition() { return competition; }
-    public void setCompetition(Competition competition) { this.competition = competition; }
-    public Athlete getAthlete() { return athlete; }
-    public void setAthlete(Athlete athlete) { this.athlete = athlete; }
-    public Double getSkiingTime() { return skiingTime; }
-    public void setSkiingTime(Double skiingTime) { this.skiingTime = skiingTime; }
-    public int getMissedShots() { return missedShots; }
-    public void setMissedShots(int missedShots) { this.missedShots = missedShots; }
-    public boolean isDnf() { return dnf; }
-    public void setDnf(boolean dnf) { this.dnf = dnf; }
-    public Double getPenaltyTime() { return penaltyTime; }
-    public void setPenaltyTime(Double penaltyTime) { this.penaltyTime = penaltyTime; }
-    public Double getFinalTime() { return finalTime; }
-    public void setFinalTime(Double finalTime) { this.finalTime = finalTime; }
-    public int getFinalRank() { return finalRank; }
-    public void setFinalRank(int finalRank) { this.finalRank = finalRank; }
 }

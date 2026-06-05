@@ -1,7 +1,11 @@
 package com.olympics.winter.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "medals")
 public class Medal {
@@ -31,13 +35,4 @@ public class Medal {
         this.athlete = athlete;
         this.type = type;
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Competition getCompetition() { return competition; }
-    public void setCompetition(Competition competition) { this.competition = competition; }
-    public Athlete getAthlete() { return athlete; }
-    public void setAthlete(Athlete athlete) { this.athlete = athlete; }
-    public MedalType getType() { return type; }
-    public void setType(MedalType type) { this.type = type; }
 }

@@ -1,7 +1,11 @@
 package com.olympics.winter.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "ski_slalom_results")
 public class SkiSlalomResult {
@@ -37,25 +41,4 @@ public class SkiSlalomResult {
     }
 
     public boolean isFinished() { return finalTime != null; }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Competition getCompetition() { return competition; }
-    public void setCompetition(Competition competition) { this.competition = competition; }
-    public Athlete getAthlete() { return athlete; }
-    public void setAthlete(Athlete athlete) { this.athlete = athlete; }
-    public Double getFirstRunTime() { return firstRunTime; }
-    public void setFirstRunTime(Double firstRunTime) { this.firstRunTime = firstRunTime; }
-    public Double getSecondRunTime() { return secondRunTime; }
-    public void setSecondRunTime(Double secondRunTime) { this.secondRunTime = secondRunTime; }
-    public boolean isFirstRunDnf() { return firstRunDnf; }
-    public void setFirstRunDnf(boolean firstRunDnf) { this.firstRunDnf = firstRunDnf; }
-    public boolean isSecondRunDnf() { return secondRunDnf; }
-    public void setSecondRunDnf(boolean secondRunDnf) { this.secondRunDnf = secondRunDnf; }
-    public boolean isAdvancedToSecondRun() { return advancedToSecondRun; }
-    public void setAdvancedToSecondRun(boolean advancedToSecondRun) { this.advancedToSecondRun = advancedToSecondRun; }
-    public Double getFinalTime() { return finalTime; }
-    public void setFinalTime(Double finalTime) { this.finalTime = finalTime; }
-    public int getFinalRank() { return finalRank; }
-    public void setFinalRank(int finalRank) { this.finalRank = finalRank; }
 }
