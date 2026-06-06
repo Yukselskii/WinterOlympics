@@ -70,6 +70,15 @@ public class AthleteService {
         athleteRepository.delete(athlete);
     }
 
+    public Athlete updateAsAdmin(Long id, Athlete updated) {
+        Athlete existing = findById(id);
+        existing.setName(updated.getName());
+        existing.setCountry(updated.getCountry());
+        existing.setGender(updated.getGender());
+        existing.setBirthDate(updated.getBirthDate());
+        return athleteRepository.save(existing);
+    }
+
     public void deleteAsAdmin(Long id) {
         Athlete athlete = findById(id);
         athleteRepository.delete(athlete);

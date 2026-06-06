@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Athlete — Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <style>.form-box { max-width: 600px; margin: 0 auto; }</style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div class="form-box card">
+        <h2>Edit Athlete</h2>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <form th:action="@{/admin/athletes/{id}/edit(id=${athlete.id})}" method="post">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" required th:value="${athlete.name}"/>
+            </div>
+            <div class="form-group">
+                <label>Country</label>
+                <input type="text" name="country" required th:value="${athlete.country}"/>
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <select name="gender" required>
+                    <option value="MALE"   th:selected="${athlete.gender.name() == 'MALE'}">Male</option>
+                    <option value="FEMALE" th:selected="${athlete.gender.name() == 'FEMALE'}">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Birth Date</label>
+                <input type="date" name="birthDate" required th:value="${athlete.birthDate}"/>
+            </div>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            <a th:href="@{/admin/athletes}" class="btn btn-primary" style="margin-left:0.5rem;">Cancel</a>
+        </form>
+    </div>
+</div>
+<footer>Winter Olympics Management System</footer>
+</body>
+</html>

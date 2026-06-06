@@ -328,4 +328,42 @@ public class WebController {
         model.addAttribute("athletes", athleteService.findAll());
         return "admin/athletes";
     }
+
+    @GetMapping("/admin/athletes/{id}/edit")
+    public String adminAthleteEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("athlete", athleteService.findById(id));
+        return "admin/athlete-edit";
+    }
+
+    @PostMapping("/admin/athletes/{id}/edit")
+    public String adminAthleteUpdate(@PathVariable Long id,
+                                     @RequestParam String name,
+                                     @RequestParam String country,
+                                     @RequestParam String gender,
+                                     @RequestParam String birthDate,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            Athlete updated = new Athlete();
+            updated.setName(name);
+            updated.setCountry(country);
+            updated.setGender(Athlete.Gender.valueOf(gender));
+            updated.setBirthDate(LocalDate.parse(birthDate));
+            athleteService.updateAsAdmin(id, updated);
+            redirectAttributes.addFlashAttribute("success", "Athlete updated successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/athletes";
+    }
+
+    @PostMapping("/admin/athletes/{id}/delete")
+    public String adminAthleteDelete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            athleteService.deleteAsAdmin(id);
+            redirectAttributes.addFlashAttribute("success", "Athlete deleted.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/athletes";
+    }
 }
